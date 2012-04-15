@@ -87,6 +87,7 @@ static void reset_error()
 	sp = stacktop - 1;
 	verbos = ON;
 	throwlabel = throwval = (CELLP)nil;
+	prompt = stdprompt;	// ƒvƒƒ“ƒvƒg‚ðŒ³‚É–ß‚·
 }
 
 static void init()
@@ -129,6 +130,16 @@ static void init()
 	}
 	(--np)->value.ptr = (NUMP)nil;
 
+	fp[0].mode = READFILE;
+	fp[0].ptr = stdin;
+	fp[1].mode = WRITEFILE;
+	fp[1].ptr = stdout;
+	fp[2].mode = WRITEFILE;
+	fp[2].ptr = stderr;
+	for (i = 3; i < NFILES; ++i) {
+		fp[i].ptr = NULL;
+	}
+
 	for (i = 0; i < TABLESIZE; i++) {
 		oblist[i] = (CELLP)nil;
 	}
@@ -160,6 +171,9 @@ static void make_sys_atoms()
 	lambda = make_atom((STR)"lambda");
 	eofread = make_atom((STR)"EOF");
 	prompt = make_atom((STR)"% ");
+	quote = make_atom((STR)"quote");
+	quote->ftype = _FSUBR;
+	quote->fptr = (CELLP)quote_f;
 }
 
 static void greeting()

@@ -37,6 +37,11 @@ typedef struct num {
 
 typedef NUM*	NUMP;
 
+typedef struct fstruct {
+	char	mode;
+	FILE*	ptr;
+} FILE_S;
+
 // tag number and mask of id and function type
 
 #define _CELL	1		// このidを持つ構造体はセル
@@ -84,6 +89,14 @@ typedef NUM*	NUMP;
 #define GO		3
 #define RET		4
 
+#define NFILES	10
+
+#define READFILE	2
+#define WRITEFILE	1
+#define APPENDFILE	0
+#define IFREAD		2
+#define BINF		4
+
 // error check
 #define ec	if(err)return(NULL)
 
@@ -122,6 +135,14 @@ typedef NUM*	NUMP;
 #define TTA		31	// Throw Tag must be an Atom
 #define TWC		32	// Throw Without Catch
 #define ILV		33	// Illegal Local Variable List
+#define FNA		34	// File Not Available
+#define IFD		35	// Illegal File Descriptor
+#define FNO		36	// File is not opend
+#define TMF		37	// Too many Files
+#define FRO		38	// File is Read Only
+#define FWO		39	// File is Write Only
+#define CCF		40	// Cannot Close File
+
 
 // GC関係
 #define NONMARK		(_UD | _SR)
@@ -152,6 +173,9 @@ int		verbos;	// GCのメッセージ用フラグ
 
 CELLP	throwlabel, throwval;
 
+FILE_S fp[ NFILES ];
+ATOMP quote, stdprompt;
+
 #else
 extern FILE	*cur_fpi, *cur_fpo;
 
@@ -171,6 +195,10 @@ extern int err, err_no;
 extern CELLP	*stacktop, *sp;
 extern int		verbos;	// GCのメッセージ用フラグ
 extern CELLP	throwlabel, throwval;
+
+extern FILE_S fp[ NFILES ];
+extern ATOMP quote, stdprompt;
+
 #endif
 
 #endif /* __MY_LISP__ */

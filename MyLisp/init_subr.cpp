@@ -9,6 +9,7 @@
 static void init0(void);
 static void init1(void);
 static void init2(void);
+static void init3(void);
 
 static void defsubr(STR name, CELLP funcp, char type);
 
@@ -21,6 +22,7 @@ void init_subr()
 	init0();
 	init1();
 	init2();
+	init3();
 }
 
 static void init0(void)
@@ -31,7 +33,6 @@ static void init0(void)
 	defsubr((STR)"atom",	(CELLP)atom_f,		_SUBR);
 	defsubr((STR)"eq",		(CELLP)eq_f,		_SUBR);
 	defsubr((STR)"equal",	(CELLP)equal_f,		_SUBR);
-	defsubr((STR)"quote",	(CELLP)quote_f,		_FSUBR);
 	defsubr((STR)"defun",	(CELLP)defun_f,		_FSUBR);
 	defsubr((STR)"cond",	(CELLP)cond_f,		_FSUBR);
 	defsubr((STR)"setf",	(CELLP)setf_f,		_FSUBR);
@@ -75,4 +76,10 @@ static void init2(void)
 	defsubr((STR)"prog",		(CELLP)prog_f,	_FSUBR);
 	defsubr((STR)"return",		(CELLP)ret_f,	_SUBR);
 	defsubr((STR)"go",			(CELLP)go_f,	_FSUBR);
+}
+
+static void init3(void)
+{
+	//defsubr((STR)"format",		(CELLP)format_f,	_SUBR);
+	//defsubr((STR)"go",			(CELLP)go_f,	_FSUBR);
 }

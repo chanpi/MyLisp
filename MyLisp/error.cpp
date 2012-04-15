@@ -37,8 +37,14 @@ static STR error_message[] = {
 	(STR)"Throw Tag must be an Atom",
 	(STR)"Throw Without Catch",
 	(STR)"Illegal Local Variable List",
+	(STR)"File Not Available",
+	(STR)"Illegal File Descriptor",
+	(STR)"File is not opend",
+	(STR)"Too many Files",
+	(STR)"File is Read Only",
+	(STR)"File is Write Only",
+	(STR)"Cannot Close File",
 };
-
 
 CELLP error(int code)
 {

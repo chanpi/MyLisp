@@ -14,6 +14,7 @@
 static STR		getstr();
 static int		skipspace();
 static CELLP	escopt(int level);
+static CELLP	formal(int level, ATOMP ap);
 static NUMP		make_num();
 static ATOMP	return_atom();
 static unsigned int	hash(STR name);
@@ -77,9 +78,25 @@ static CELLP	escopt(int level)
 	case '|':
 	case '\\':
 		return (CELLP)return_atom();	// return_atom(ON)
+	case '\'':
+		return formal(level, quote);
 	default:
 		return error(PSEXP);			// 現時点ではその他はエラー
 	}
+}
+
+static CELLP	formal(int level, ATOMP ap)
+{
+	CELLP cp2;
+
+	stackcheck;
+	*(++sp) = newcell();	ec;
+	cp2 = newcell();		ec;
+	(*sp)->car = (CELLP)ap;
+	(*sp)->cdr = cp2;
+	++txtp;
+	getcar(cp2, level);		ec;
+	return *(sp--);
 }
 
 // 数値アトムの作成
