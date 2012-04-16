@@ -88,6 +88,7 @@ int gbc(int n, int a)
 			fprintf(stdout, "\tfree str  = %d\n", s);
 		}
 	}
+	return 0;
 }
 
 static int mark(CELLP cp, int n)	// g—p’†‚Ì\‘¢‘Ì‚Éƒ}[ƒN‚ğ•t‚¯‚éBn‚Í”’l—Ìˆæ‚Éƒ}[ƒN‚ğ‚Â‚¯‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒOB
@@ -126,6 +127,7 @@ static int mark(CELLP cp, int n)	// g—p’†‚Ì\‘¢‘Ì‚Éƒ}[ƒN‚ğ•t‚¯‚éBn‚Í”’l—Ìˆæ‚
 	default:
 		return (int)error(ULO);
 	}
+	return 0;
 }
 
 static void remove_mark_num(void)

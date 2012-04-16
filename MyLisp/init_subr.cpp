@@ -50,12 +50,6 @@ static void init0(void)
 	defsubr((STR)"plus",	(CELLP)plus_f,		_SUBR);
 }
 
-static void init1(void)
-{
-	defsubr((STR)"reclaim",	(CELLP)reclaim_f,	_SUBR);
-	defsubr((STR)"verbos",	(CELLP)verbos_f,	_SUBR);
-}
-
 static void defsubr(STR name, CELLP funcp, char type)
 {
 	ATOMP ap;
@@ -63,6 +57,12 @@ static void defsubr(STR name, CELLP funcp, char type)
 	ap = make_atom(name);
 	ap->ftype = type;
 	ap->fptr = (CELLP)funcp;
+}
+
+static void init1(void)
+{
+	defsubr((STR)"reclaim",	(CELLP)reclaim_f,	_SUBR);
+	defsubr((STR)"verbos",	(CELLP)verbos_f,	_SUBR);
 }
 
 static void init2(void)
@@ -80,6 +80,15 @@ static void init2(void)
 
 static void init3(void)
 {
-	//defsubr((STR)"format",		(CELLP)format_f,	_SUBR);
-	//defsubr((STR)"go",			(CELLP)go_f,	_FSUBR);
+	defsubr((STR)"format",		(CELLP)format_f,	_SUBR);
+	defsubr((STR)"prompt",		(CELLP)prompt_f,	_SUBR);
+	defsubr((STR)"load",		(CELLP)load_f,		_SUBR);
+	defsubr((STR)"open",		(CELLP)open_f,		_SUBR);
+	defsubr((STR)"close",		(CELLP)close_f,		_SUBR);
+	defsubr((STR)"fmode",		(CELLP)fmode_f,		_SUBR);
+	defsubr((STR)"readch",		(CELLP)readch_f,	_SUBR);
+	defsubr((STR)"dirin",		(CELLP)dirin_f,		_SUBR);
+	defsubr((STR)"dirout",		(CELLP)dirout_f,	_SUBR);
+	defsubr((STR)"curin",		(CELLP)curin_f,		_SUBR);
+	defsubr((STR)"curout",		(CELLP)curout_f,	_SUBR);
 }

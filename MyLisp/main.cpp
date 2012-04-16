@@ -66,12 +66,13 @@ int toplevel_function()
 		}
 		print_s(*argp2, ESCON);
 		ec;
-		if (isatty(fileno(cur_fpi))) {
+		if (_isatty(_fileno(cur_fpi))) {
 			fputc('\n', cur_fpo);
 		}
 		fputc('\n', cur_fpo);
 	}
 	sp -= 2;
+	return 0;
 }
 
 static void reset_error()
@@ -111,20 +112,20 @@ static void init()
 	}
 	nil = freeatom++;
 
-	for (cp = celltop; cp < celltop + CELLSIZE; cp++) {
+	for (cp = celltop; cp < celltop + CELLSIZE; ++cp) {
 		cp->id = _CELL;
 		cp->car = (CELLP)nil;
 		cp->cdr = cp + 1;
 	}
 	(--cp)->cdr = (CELLP)nil;
 
-	for (ap = atomtop; ap < atomtop + ATOMSIZE; ap++) {
+	for (ap = atomtop + 1; ap < atomtop + ATOMSIZE; ++ap) {
 		ap->id = _ATOM;
 		ap->plist = (CELLP)(ap + 1);
 	}
 	(--ap)->plist = (CELLP)nil;
 
-	for (np = numtop; np < numtop + NUMSIZE; np++) {
+	for (np = numtop; np < numtop + NUMSIZE; ++np) {
 		np->id= _FIX;
 		np->value.ptr = np + 1;
 	}
@@ -140,7 +141,7 @@ static void init()
 		fp[i].ptr = NULL;
 	}
 
-	for (i = 0; i < TABLESIZE; i++) {
+	for (i = 0; i < TABLESIZE; ++i) {
 		oblist[i] = (CELLP)nil;
 	}
 
@@ -170,7 +171,7 @@ static void make_sys_atoms()
 	t = make_atom((STR)"t");
 	lambda = make_atom((STR)"lambda");
 	eofread = make_atom((STR)"EOF");
-	prompt = make_atom((STR)"% ");
+	prompt = stdprompt = make_atom((STR)"% ");
 	quote = make_atom((STR)"quote");
 	quote->ftype = _FSUBR;
 	quote->fptr = (CELLP)quote_f;
@@ -192,7 +193,7 @@ void __cdecl quit(int)
 
 void reset_stdin()		// EOF‚É‚æ‚èƒRƒ“ƒ\[ƒ‹‚ª•Â‚¶‚Ä‚µ‚Ü‚¤‚Ì‚ğ–h‚®
 {
-	if (isatty(fileno(stdin))) {
+	if (_isatty(_fileno(stdin))) {
 		rewind(stdin);
 	} else {
 		freopen("CON", "r", stdin);

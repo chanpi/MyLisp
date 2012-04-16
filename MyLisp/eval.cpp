@@ -150,6 +150,7 @@ static CELLP apply(CELLP func, CELLP args, CELLP env)
 	default:
 		return error(IFF);
 	}
+	return result;
 }
 
 // ŠÂ‹«‚É‘Î‚µ‚Ä•Ï”‚Ì‘©”›‚ğs‚¤

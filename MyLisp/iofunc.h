@@ -7,11 +7,11 @@
 extern "C" {
 #endif
 
-	CELLP read_f(CELLP args);
+	CELLP read_f(CELLP arg);
 	CELLP print_f(CELLP args);
 	CELLP prin1_f(CELLP args);
 	CELLP princ_f(CELLP args);
-	CELLP terpri_f();
+	CELLP terpri_f(CELLP arg);
 	CELLP open_f(CELLP args);	// ファイルを開く
 	CELLP close_f(CELLP arg);
 	CELLP readch_f(CELLP arg);

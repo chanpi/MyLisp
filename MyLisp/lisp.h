@@ -1,5 +1,4 @@
-/* -*- coding: utf-8 -*- */
-#ifndef __MY_LISP__
+﻿#ifndef __MY_LISP__
 #define __MY_LISP__
 
 #include <stdio.h>

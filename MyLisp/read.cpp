@@ -27,7 +27,7 @@ static int		getcdr(CELLP cp, int level);
 // プロンプトの出力及び入力文字列の取り込み
 static STR getstr()
 {
-	if (_isatty(fileno(cur_fpi))) {		// ファイル記述子が文字デバイスに関連付けられているか
+	if (_isatty(_fileno(cur_fpi))) {		// ファイル記述子が文字デバイスに関連付けられているか
 		print_s((CELLP)prompt, ESCOFF);
 	}
 	*(txtp = oneline) = '\0';
@@ -356,7 +356,6 @@ static CELLP	make_list(int level)
 static void		getcar(CELLP cp, int level)
 {
 	CELLP cp1;
-	int ret;
 	cp1 = read_s(level);
 	if (err) {
 		return;
@@ -376,6 +375,7 @@ static int		getcdr(CELLP cp, int level)
 	if (*txtp != ')' && *txtp != ']') {
 		return (int)error(PSEXP);
 	}
+	return 0;
 }
 
 int		num(STR x)
