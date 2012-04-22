@@ -16,6 +16,11 @@ extern "C" {
 	CELLP reclaim_f(void);
 	CELLP verbos_f(CELLP arg);
 
+	CELLP and_f(CELLP args, CELLP env);
+	CELLP or_f(CELLP args, CELLP env);
+	CELLP psetq_f(CELLP args, CELLP env);
+	CELLP set_f(CELLP args, CELLP env);
+
 #if defined __cplusplus
 }
 #endif

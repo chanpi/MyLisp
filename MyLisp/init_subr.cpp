@@ -5,11 +5,14 @@
 #include "calc.h"
 #include "read.h"
 #include "prog.h"
+#include "pred.h"
+#include "str.h"
 
 static void init0(void);
 static void init1(void);
 static void init2(void);
 static void init3(void);
+static void init4(void);
 
 static void defsubr(STR name, CELLP funcp, char type);
 
@@ -23,6 +26,7 @@ void init_subr()
 	init1();
 	init2();
 	init3();
+	init4();
 }
 
 static void init0(void)
@@ -91,4 +95,38 @@ static void init3(void)
 	defsubr((STR)"dirout",		(CELLP)dirout_f,	_SUBR);
 	defsubr((STR)"curin",		(CELLP)curin_f,		_SUBR);
 	defsubr((STR)"curout",		(CELLP)curout_f,	_SUBR);
+}
+
+static void init4(void)
+{
+	defsubr((STR)"and",			(CELLP)and_f,		_FSUBR);
+	defsubr((STR)"or",			(CELLP)or_f,		_FSUBR);
+	defsubr((STR)"psetf",		(CELLP)psetq_f,		_FSUBR);
+	defsubr((STR)"set",			(CELLP)set_f,		_FSUBR);
+	defsubr((STR)"append",		(CELLP)append_f,	_SUBR);
+	defsubr((STR)"nconc",		(CELLP)nconc_f,		_SUBR);
+	defsubr((STR)"list",		(CELLP)list_f,		_SUBR);
+	defsubr((STR)"reverse",		(CELLP)reverse_f,	_SUBR);
+	defsubr((STR)"assoc",		(CELLP)assoc_f,		_SUBR);
+	defsubr((STR)"rplaca",		(CELLP)rplaca_f,	_SUBR);
+	defsubr((STR)"rplacd",		(CELLP)rplacd_f,	_SUBR);
+	defsubr((STR)"length",		(CELLP)length_f,	_SUBR);
+	defsubr((STR)"member",		(CELLP)member_f,	_SUBR);
+	defsubr((STR)"null",		(CELLP)null_f,		_SUBR);
+	defsubr((STR)"zerop",		(CELLP)zerop_f,		_SUBR);
+	defsubr((STR)"numberp",		(CELLP)numberp_f,	_SUBR);
+	defsubr((STR)"<",			(CELLP)lessp_f,		_SUBR);
+	defsubr((STR)">",			(CELLP)greaterp_f,	_SUBR);
+	defsubr((STR)"ascii",		(CELLP)ascii_f,		_SUBR);
+	defsubr((STR)"implode",		(CELLP)implode_f,	_SUBR);
+	defsubr((STR)"explode",		(CELLP)explode_f,	_SUBR);
+	defsubr((STR)"alen",		(CELLP)alen_f,		_SUBR);
+	defsubr((STR)"1+",			(CELLP)add1_f,		_SUBR);
+	defsubr((STR)"1-",			(CELLP)sub1_f,		_SUBR);
+	defsubr((STR)"+",			(CELLP)plus_f,		_SUBR);
+	defsubr((STR)"-",			(CELLP)difference_f,	_SUBR);
+	defsubr((STR)"*",			(CELLP)times_f,		_SUBR);
+	defsubr((STR)"/",			(CELLP)quotient_f,	_SUBR);
+	defsubr((STR)"%",			(CELLP)remainder_f,	_SUBR);
+	defsubr((STR)"divide",		(CELLP)divide_f,	_SUBR);
 }

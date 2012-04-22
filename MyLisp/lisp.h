@@ -141,7 +141,7 @@ typedef struct fstruct {
 #define FRO		38	// File is Read Only
 #define FWO		39	// File is Write Only
 #define CCF		40	// Cannot Close File
-
+#define DIVZERO	41	// Division by zero
 
 // GC関係
 #define NONMARK		(_UD | _SR)

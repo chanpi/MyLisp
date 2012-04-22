@@ -1,6 +1,7 @@
 #include "functions.h"
 #include "error.h"
 #include "gbc.h"
+#include "prog.h"
 #include <string.h>
 
 /* Pure lisp functions */
@@ -212,4 +213,204 @@ CELLP remprop_f(CELLP args)
 		}
 	}
 	return (CELLP)nil;
+}
+
+CELLP append_f(CELLP args)
+{
+	CELLP cp1, cp2;
+
+	if (args->id != _CELL) {
+		return error(NEA);
+	}
+	while (args->car->id != _CELL) {
+		if (args->car != (CELLP)nil) {
+			return error(IAL);
+		}
+		if (args->cdr->id != _CELL) {
+			return args->car;
+		}
+		args = args->cdr;
+	}
+	// 最後の引数ならそのまま返す
+	if (args->cdr->id != _CELL) {
+		return args->car;
+	}
+	// 前につなぐリストはコピーを取る
+	*++sp = newcell(); ec;
+	cp1 = *sp;
+	cp2 = args->car;
+	cp1->car = cp2->car;
+	cp2 = cp2->cdr;
+	while (cp2->id == _CELL) {
+		cp1->cdr = newcell(); ec;
+		cp1 = cp1->cdr;
+		cp1->car = cp2->car;
+		cp2 = cp2->cdr;
+	}
+
+	// argsを追加セルへ
+	args = args->cdr;
+	// append対象がある限り行う
+	while (args->cdr->id == _CELL) {
+		while (args->car->id != _CELL) {
+			if (args->car != (CELLP)nil) {
+				return error(IAL);
+			}
+			if (args->cdr->id != _CELL) {
+				cp1->cdr = (CELLP)nil;
+				return *sp--;
+			}
+			args = args->cdr;
+		}
+		cp2 = args->car;
+		while (cp2->id == _CELL) {
+			cp1->cdr = newcell(); ec;
+			cp1 = cp1->cdr;
+			cp1->car = cp2->car;
+			cp2 = cp2->cdr;
+		}
+		args = args->cdr;
+	}
+	if (args->car->id != _CELL && args->car != (CELLP)nil) {
+		return error(IAL);
+	}
+	cp1->cdr = args->car;
+	return *sp--;
+}
+
+CELLP nconc_f(CELLP args)
+{
+	CELLP cp1, cp2;
+
+	if (args->id != _CELL) {
+		return error(NEA);
+	}
+	// nilは無視する
+	while (args->car == (CELLP)nil && args->cdr->id == _CELL) {
+		args = args->cdr;
+	}
+	if (args->car->id != _CELL && args->car != (CELLP)nil) {
+		return error(IAL);
+	}
+	if (args->cdr->id != _CELL) {
+		return args->car;
+	}
+	cp1 = args->car;
+	cp2 = cp1;
+	args = args->cdr;
+	// 最初のリストの最後のリストを取り出し、cdrを書き換える
+	while (cp2->cdr->id == _CELL) {
+		cp2 = cp2->cdr;
+	}
+	cp2->cdr = args->car;
+	while (args->cdr->id == _CELL) {
+		args = args->cdr;
+		if (args->car->id != _CELL && args->car != (CELLP)nil) {
+			return error(IAL);
+		}
+		while (cp2->cdr->id == _CELL) {
+			cp2 = cp2->cdr;
+		}
+		cp2->cdr = args->car;
+	}
+	return cp1;
+}
+
+CELLP reverse_f(CELLP args)
+{
+	CELLP cp;
+
+	if (args->id != _CELL) {
+		return error(NEA);
+	}
+	cp = args->car;
+	*++sp = (CELLP)nil;
+	while (cp->id == _CELL) {
+		*sp = cons(cp->car, *sp);
+		cp = cp->cdr;
+	}
+	return *sp--;
+}
+
+CELLP list_f(CELLP args)
+{
+	CELLP cp;
+
+	if (args->id != _CELL) {
+		return (CELLP)nil;
+	}
+	*++sp = newcell(); ec;
+	cp = *sp;
+	cp->car = args->car;
+	args = args->cdr;
+	while (args->id == _CELL) {
+		cp->cdr = newcell(); ec;
+		cp = cp->cdr;
+		cp->car = args->car;
+		args = args->cdr;
+	}
+	cp->cdr = (CELLP)nil;
+	return *sp--;
+}
+
+// 連想リストを検索する
+CELLP assoc_f(CELLP args)
+{
+	CELLP result;
+
+	if (args->id != _CELL || args->cdr->id != _CELL) {
+		return error(NEA);
+	}
+	result = assoc(args->car, args->cdr->car); ec;
+	if (!result) {
+		return (CELLP)nil;
+	}
+	return result;
+}
+
+CELLP rplaca_f(CELLP args)
+{
+	CELLP cp;
+
+	if (args->id != _CELL || args->cdr->id != _CELL) {
+		return error(NEA);
+	}
+	if ((cp = args->car)->id != _CELL) {
+		return error(IAL);
+	}
+	cp->car = args->cdr->car;
+	return cp;
+}
+
+CELLP rplacd_f(CELLP args)
+{
+	CELLP cp;
+
+	if (args->id != _CELL || args->cdr->id != _CELL) {
+		return error(NEA);
+	}
+	if ((cp = args->car)->id != _CELL) {
+		return error(IAL);
+	}
+	cp->cdr = args->cdr->car;
+	return cp;
+}
+
+CELLP length_f(CELLP args)
+{
+	long i = 0;
+	NUMP np;
+
+	if (args->id != _CELL) {
+		return error(NEA);
+	}
+	if (args->car->id != _CELL & args->car != (CELLP)nil) {
+		return error(IAL);
+	}
+	for (args = args->car; args->id == _CELL; args = args->cdr) {
+		++i;
+	}
+	np = newnum(); ec;
+	np->value.fix = i;
+	return (CELLP)np;
 }

@@ -56,6 +56,11 @@ CELLP read_s(int level)
 	if (skipspace() == NULL) {	// EOF
 		return (CELLP)eofread;
 	} else if (num(txtp)) {		// 符号+-のことも考えてポインタで渡す
+		if (*txtp == '1' && *(txtp+2) == ' ') {
+			if (*(txtp+1) == '+' || *(txtp+1) == '-') {
+				return (CELLP)return_atom();
+			}
+		}
 		return (CELLP)make_num();
 	} else if (isesc(*txtp)) {
 		return escopt(level);

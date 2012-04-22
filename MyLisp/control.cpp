@@ -166,3 +166,97 @@ CELLP verbos_f(CELLP arg)
 		return (CELLP)t;
 	}
 }
+
+CELLP and_f(CELLP args, CELLP env)
+{
+	CELLP result;
+
+	result = (CELLP)t;
+	// nil‚ªo‚Ä‚­‚é‚Ü‚Åbody‚ğ‡‚É•]‰¿‚·‚é
+	while (args->id == _CELL) {
+		result = eval(args->car, env); ec;
+		if (result == (CELLP)nil) {
+			return (CELLP)nil;
+		}
+		args = args->cdr;
+	}
+	return result;
+}
+
+CELLP or_f(CELLP args, CELLP env)
+{
+	CELLP result;
+
+	// nil‚Å‚È‚¢‚à‚Ì‚ªo‚Ä‚­‚é‚Ü‚Åbody‚ğ‡‚É•]‰¿‚·‚é
+	while (args->id == _CELL) {
+		result = eval(args->car, env); ec;
+		if (result != (CELLP)nil) {
+			return result;
+		}
+		args = args->cdr;
+	}
+	return (CELLP)nil;
+}
+
+// (psetq x 1 y 2 z 3)
+CELLP psetq_f(CELLP args, CELLP env)
+{
+	CELLP val, cp, *cur_sp, *sp2;
+	ATOMP var;
+
+	cur_sp = sp;
+	// set‚·‚é’l‚ğ‚·‚×‚Äæ‚É•]‰¿‚µAstack‚ÉÏ‚Ş
+	for (cp = args; cp->id == _CELL; cp = cp->cdr->cdr) {
+		if (cp->cdr->id != _CELL) {
+			return error(NEA);
+		}
+		stackcheck;
+		*++sp = eval(cp->cdr->car, env); ec;
+	}
+	val = *sp;
+	sp2 = cur_sp + 1;
+	while (args->id == _CELL) {
+		var = (ATOMP)args->car;
+		if (var->id != _ATOM) {
+			return error(IAA);
+		}
+		// ’l‚ğ•Ï‚¦‚Ä‚Í‚¢‚¯‚È‚¢ƒVƒ“ƒ{ƒ‹
+		if (var == nil || var == t || var == eofread) {
+			return error(CCC);
+		}
+		cp = setenv(var, *sp2, env); ec;
+		if (cp == NULL) {
+			var->value == *sp2;
+		}
+		sp2++;
+		args = args->cdr->cdr;
+	}
+	sp = cur_sp;
+	return val;
+}
+
+CELLP set_f(CELLP args, CELLP env)
+{
+	CELLP val, result;
+	ATOMP var;
+
+	while (args->id == _CELL) {
+		if (args->cdr->id != _CELL) {
+			return error(NEA);
+		}
+		var = (ATOMP)eval(args->car, env); ec;
+		val = eval(args->cdr->car, env); ec;
+		if (var->id != _ATOM) {
+			return error(IAA);
+		}
+		if (var == nil || var == t || var == eofread) {
+			return error(CCC);
+		}
+		result = setenv(var, val, env); ec;
+		if (result == NULL) {
+			var->value = val;
+		}
+		args = args->cdr->cdr;
+	}
+	return val;
+}

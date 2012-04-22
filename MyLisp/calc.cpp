@@ -117,3 +117,190 @@ CELLP plus_f(CELLP args)
 	}
 }
 
+CELLP add1_f(CELLP arg)
+{
+	char c;
+	NUMP np;
+
+	if (arg->id != _CELL) {
+		return error(NEA);
+	}
+	if ((c = arg->car->id)  != _FIX && c != _FLT) {
+		return error(IAN);
+	}
+	np = newnum(); ec;
+	if (c == _FIX) {
+		np->value.fix = ((NUMP)(arg->car))->value.fix + 1;
+	} else {
+		np->id = _FLT;
+		np->value.flt = ((NUMP)(arg->car))->value.flt + 1;
+	}
+	return (CELLP)np;
+}
+
+CELLP sub1_f(CELLP arg)
+{
+	char c;
+	NUMP np;
+
+	if (arg->id != _CELL) {
+		return error(NEA);
+	}
+	if ((c = arg->car->id)  != _FIX && c != _FLT) {
+		return error(IAN);
+	}
+	np = newnum(); ec;
+	if (c == _FIX) {
+		np->value.fix = ((NUMP)(arg->car))->value.fix - 1;
+	} else {
+		np->id = _FLT;
+		np->value.flt = ((NUMP)(arg->car))->value.flt - 1;
+	}
+	return (CELLP)np;
+}
+
+CELLP times_f(CELLP args)
+{
+	NUM val;
+	NUMP np;
+
+	args = setfirst(args, &np); ec;
+	if (args == (CELLP)nil) {
+		return (CELLP)np;
+	}
+	args = get1arg(args, &val); ec;
+	if (np->id == _FIX) {
+		while (val.id == _FIX) {
+			np->value.fix *= val.value.fix;
+			if (args == (CELLP)nil) {
+				return (CELLP)np;
+			}
+			args = get1arg(args, &val); ec;
+		}
+		toflt(np);
+	} else {
+		toflt(&val);
+	}
+
+	for (;;) {
+		np->value.flt *= val.value.flt;
+		if (args == (CELLP)nil) {
+			return (CELLP)np;
+		}
+		args = get1arg(args, &val); ec;
+		toflt(&val);
+	}
+	// ‚±‚±‚É‚Í—ˆ‚È‚¢
+}
+
+CELLP difference_f(CELLP args)
+{
+	NUM val;
+	NUMP np;
+
+	args = setfirst(args, &np); ec;
+	if (args == (CELLP)nil) {
+		return (CELLP)np;
+	}
+	args = get1arg(args, &val); ec;
+	if (np->id == _FIX) {
+		while (val.id == _FIX) {
+			np->value.fix -= val.value.fix;
+			if (args == (CELLP)nil) {
+				return (CELLP)np;
+			}
+			args = get1arg(args, &val); ec;
+		}
+		toflt(np);
+	} else {
+		toflt(&val);
+	}
+	for (;;) {
+		np->value.flt -= val.value.flt;
+		if (args == (CELLP)nil) {
+			return (CELLP)np;
+		}
+		args = get1arg(args, &val); ec;
+		toflt(&val);
+	}
+	// ‚±‚±‚É‚Í—ˆ‚È‚¢
+}
+
+CELLP quotient_f(CELLP args)
+{
+	NUM val;
+	NUMP np;
+
+	args = setfirst(args, &np); ec;
+	if (args == (CELLP)nil) {
+		return (CELLP)np;
+	}
+	args = get1arg(args, &val); ec;
+	if (np->id == _FIX) {
+		while (val.id == _FIX) {
+			if (val.value.fix == 0) {
+				return error(DIVZERO);
+			}
+			np->value.fix /= val.value.fix;
+			if (args == (CELLP)nil) {
+				return (CELLP)np;
+			}
+			args = get1arg(args, &val); ec;
+		}
+		toflt(np);
+	} else {
+		toflt(&val);
+	}
+	for (;;) {
+		if (val.value.flt == 0) {
+			return error(DIVZERO);
+		}
+		np->value.flt /= val.value.flt;
+		if (args == (CELLP)nil) {
+			return (CELLP)np;
+		}
+		args = get1arg(args, &val); ec;
+		toflt(&val);
+	}
+	// ‚±‚±‚É‚Í—ˆ‚È‚¢
+}
+
+CELLP remainder_f(CELLP args)
+{
+	NUM val;
+	NUMP np;
+
+	args = setfirst(args, &np); ec;
+	if (args == (CELLP)nil) {
+		return (CELLP)np;
+	}
+	args = get1arg(args, &val); ec;
+	if (np->id == _FIX) {
+		while (val.id == _FIX) {
+			np->value.fix %= val.value.fix;
+			if (args == (CELLP)nil) {
+				return (CELLP)np;
+			}
+			args = get1arg(args, &val); ec;
+		}
+	}
+	return error(IAF);
+}
+
+CELLP divide_f(CELLP args)
+{
+	CELLP cp;
+
+	stackcheck;
+	*(++sp) = quotient_f(args); ec;
+	stackcheck;
+	*(++sp) = remainder_f(args); ec;
+	stackcheck;
+	*(++sp) = newcell(); ec;
+	cp = newcell(); ec;
+	cp->car = *(sp-2);
+	cp->cdr = *sp;
+	(*sp)->car = *(sp-1);
+	sp -= 3;
+	return cp;
+}

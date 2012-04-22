@@ -19,6 +19,15 @@ extern "C" {
 	CELLP get_f(CELLP args);
 	CELLP remprop_f(CELLP args);
 
+	CELLP append_f(CELLP args);
+	CELLP nconc_f(CELLP args);
+	CELLP reverse_f(CELLP args);
+	CELLP list_f(CELLP args);
+	CELLP assoc_f(CELLP args);
+	CELLP rplaca_f(CELLP args);
+	CELLP rplacd_f(CELLP args);
+	CELLP length_f(CELLP args);
+
 #if defined __cplusplus
 }
 #endif

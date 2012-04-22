@@ -44,6 +44,7 @@ static STR error_message[] = {
 	(STR)"File is Read Only",
 	(STR)"File is Write Only",
 	(STR)"Cannot Close File",
+	(STR)"Division by zero",
 };
 
 CELLP error(int code)
